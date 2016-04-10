@@ -7,9 +7,17 @@
 //
 
 #include <iostream>
+#include <SDL2/SDL.h>
+#include "projectmain.hpp"
+
+using namespace std;
 
 int main(int argc, const char * argv[]) {
-    // insert code here...
-    std::cout << "Haiaaaa, World!\n";
+
+    cout << "Haiaaaa, World!\n";
+
+    projectmain::start();
     return 0;
 }
+
+
