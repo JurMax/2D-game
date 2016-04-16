@@ -11,12 +11,18 @@
 
 #include <stdio.h>
 #include <SDL2/SDL.h>
-#include "ProjectMain.hpp"
+#include "ProjectMain.hpp"  
+
 
 bool isKeyDown(SDL_Scancode code);
-void handleEvents();
+bool isKeyPressed(SDL_Scancode code);
 
-void addKey(SDL_KeyboardEvent key);
-void removeKey(SDL_KeyboardEvent key);
+
+namespace inputHandler {
+    void handleEvents();
+
+    void addKey(SDL_KeyboardEvent key);
+    void removeKey(SDL_KeyboardEvent key);
+}
 
 #endif /* inputhandler_hpp */

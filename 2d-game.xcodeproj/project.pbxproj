@@ -14,8 +14,10 @@
 		E403517C1CBA6418006945E1 /* resources in Resources */ = {isa = PBXBuildFile; fileRef = E40351791CBA53FF006945E1 /* resources */; };
 		E403517F1CBA654A006945E1 /* functions.cpp in Sources */ = {isa = PBXBuildFile; fileRef = E403517D1CBA654A006945E1 /* functions.cpp */; settings = {ASSET_TAGS = (); }; };
 		E40351851CBA65F6006945E1 /* inputhandler.cpp in Sources */ = {isa = PBXBuildFile; fileRef = E40351831CBA65F6006945E1 /* inputhandler.cpp */; settings = {ASSET_TAGS = (); }; };
-		E40351871CBA6A4A006945E1 /* plasmati.ttf in Resources */ = {isa = PBXBuildFile; fileRef = E40351861CBA6A4A006945E1 /* plasmati.ttf */; };
+		E403518B1CBA79C5006945E1 /* baseobjects.cpp in Sources */ = {isa = PBXBuildFile; fileRef = E40351891CBA79C5006945E1 /* baseobjects.cpp */; settings = {ASSET_TAGS = (); }; };
 		E4B4C6021CB853F1008586F0 /* main.cpp in Sources */ = {isa = PBXBuildFile; fileRef = E4B4C6011CB853F1008586F0 /* main.cpp */; };
+		E4E229441CC24DBC00D317E6 /* player.cpp in Sources */ = {isa = PBXBuildFile; fileRef = E4E229421CC24DBC00D317E6 /* player.cpp */; settings = {ASSET_TAGS = (); }; };
+		E4E229471CC2522F00D317E6 /* world.cpp in Sources */ = {isa = PBXBuildFile; fileRef = E4E229451CC2522F00D317E6 /* world.cpp */; settings = {ASSET_TAGS = (); }; };
 /* End PBXBuildFile section */
 
 /* Begin PBXCopyFilesBuildPhase section */
@@ -42,9 +44,14 @@
 		E403517E1CBA654A006945E1 /* functions.hpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.h; path = functions.hpp; sourceTree = "<group>"; };
 		E40351831CBA65F6006945E1 /* inputhandler.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = inputhandler.cpp; sourceTree = "<group>"; };
 		E40351841CBA65F6006945E1 /* inputhandler.hpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.h; path = inputhandler.hpp; sourceTree = "<group>"; };
-		E40351861CBA6A4A006945E1 /* plasmati.ttf */ = {isa = PBXFileReference; lastKnownFileType = file; name = plasmati.ttf; path = resources/plasmati.ttf; sourceTree = "<group>"; };
+		E40351891CBA79C5006945E1 /* baseobjects.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = baseobjects.cpp; sourceTree = "<group>"; };
+		E403518A1CBA79C5006945E1 /* baseobjects.hpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.h; path = baseobjects.hpp; sourceTree = "<group>"; };
 		E4B4C5FE1CB853F1008586F0 /* 2d-game */ = {isa = PBXFileReference; explicitFileType = "compiled.mach-o.executable"; includeInIndex = 0; path = "2d-game"; sourceTree = BUILT_PRODUCTS_DIR; };
 		E4B4C6011CB853F1008586F0 /* main.cpp */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.cpp.cpp; path = main.cpp; sourceTree = "<group>"; };
+		E4E229421CC24DBC00D317E6 /* player.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = player.cpp; sourceTree = "<group>"; };
+		E4E229431CC24DBC00D317E6 /* player.hpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.h; path = player.hpp; sourceTree = "<group>"; };
+		E4E229451CC2522F00D317E6 /* world.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = world.cpp; sourceTree = "<group>"; };
+		E4E229461CC2522F00D317E6 /* world.hpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.h; path = world.hpp; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -61,10 +68,18 @@
 /* End PBXFrameworksBuildPhase section */
 
 /* Begin PBXGroup section */
+		E40351881CBA79A2006945E1 /* objects */ = {
+			isa = PBXGroup;
+			children = (
+				E40351891CBA79C5006945E1 /* baseobjects.cpp */,
+				E4E229421CC24DBC00D317E6 /* player.cpp */,
+			);
+			name = objects;
+			sourceTree = "<group>";
+		};
 		E4B4C5F51CB853F1008586F0 = {
 			isa = PBXGroup;
 			children = (
-				E40351861CBA6A4A006945E1 /* plasmati.ttf */,
 				E40351751CBA5246006945E1 /* SDL2_image.framework */,
 				E40351761CBA5246006945E1 /* SDL2_ttf.framework */,
 				E403516B1CB8F8BB006945E1 /* SDL2.framework */,
@@ -87,14 +102,43 @@
 			isa = PBXGroup;
 			children = (
 				E4B4C6011CB853F1008586F0 /* main.cpp */,
-				E403516E1CB8FF1B006945E1 /* projectmain.hpp */,
-				E403516D1CB8FF1B006945E1 /* projectmain.cpp */,
-				E403517E1CBA654A006945E1 /* functions.hpp */,
-				E403517D1CBA654A006945E1 /* functions.cpp */,
-				E40351841CBA65F6006945E1 /* inputhandler.hpp */,
-				E40351831CBA65F6006945E1 /* inputhandler.cpp */,
+				E4E229401CC22C5200D317E6 /* headers */,
+				E4E229481CC2525200D317E6 /* files */,
 			);
 			path = "2d-game";
+			sourceTree = "<group>";
+		};
+		E4E229401CC22C5200D317E6 /* headers */ = {
+			isa = PBXGroup;
+			children = (
+				E403516E1CB8FF1B006945E1 /* projectmain.hpp */,
+				E403517E1CBA654A006945E1 /* functions.hpp */,
+				E40351841CBA65F6006945E1 /* inputhandler.hpp */,
+				E4E229461CC2522F00D317E6 /* world.hpp */,
+				E4E229411CC22C5A00D317E6 /* objects */,
+			);
+			name = headers;
+			sourceTree = "<group>";
+		};
+		E4E229411CC22C5A00D317E6 /* objects */ = {
+			isa = PBXGroup;
+			children = (
+				E403518A1CBA79C5006945E1 /* baseobjects.hpp */,
+				E4E229431CC24DBC00D317E6 /* player.hpp */,
+			);
+			name = objects;
+			sourceTree = "<group>";
+		};
+		E4E229481CC2525200D317E6 /* files */ = {
+			isa = PBXGroup;
+			children = (
+				E403516D1CB8FF1B006945E1 /* projectmain.cpp */,
+				E4E229451CC2522F00D317E6 /* world.cpp */,
+				E403517D1CBA654A006945E1 /* functions.cpp */,
+				E40351831CBA65F6006945E1 /* inputhandler.cpp */,
+				E40351881CBA79A2006945E1 /* objects */,
+			);
+			name = files;
 			sourceTree = "<group>";
 		};
 /* End PBXGroup section */
@@ -155,7 +199,6 @@
 			buildActionMask = 2147483647;
 			files = (
 				E403517C1CBA6418006945E1 /* resources in Resources */,
-				E40351871CBA6A4A006945E1 /* plasmati.ttf in Resources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -168,8 +211,11 @@
 			files = (
 				E403516F1CB8FF1B006945E1 /* projectmain.cpp in Sources */,
 				E4B4C6021CB853F1008586F0 /* main.cpp in Sources */,
+				E4E229441CC24DBC00D317E6 /* player.cpp in Sources */,
 				E403517F1CBA654A006945E1 /* functions.cpp in Sources */,
 				E40351851CBA65F6006945E1 /* inputhandler.cpp in Sources */,
+				E4E229471CC2522F00D317E6 /* world.cpp in Sources */,
+				E403518B1CBA79C5006945E1 /* baseobjects.cpp in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};

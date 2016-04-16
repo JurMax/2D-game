@@ -11,12 +11,12 @@
 
 #include <iostream>
 #include <stdio.h>
+#include <vector>
+#include <math.h>
+
 #include <SDL2/SDL.h>
 #include <SDL2_image/SDL_image.h>
 #include <SDL2_ttf/SDL_ttf.h>
-
-#include "inputhandler.hpp"
-#include "functions.hpp"
 
 
 class ProjectMain {
@@ -30,18 +30,24 @@ public:
     int currentFPS = 0;
     
 private:
+    static ProjectMain projectInstance;
     int previousTicks = 0;
     time_t timeRunning;  /* for fps calculation */
     int prefTime = 0;
     int framesCounter = 0;
-    
+
     
 public:
+    static ProjectMain* getInstance() {
+        return &projectInstance;
+    }
     void setup();
     void loadResources();
     float getSecondsRunning();
+    
 
 private:
+    
     bool initializeSDL();
 
     void updateLoop();
@@ -50,26 +56,9 @@ private:
 
 
 
-class TestClass {
-public:
-    void setChar(char c);
-    void printChar();
-private:
-    char ch;
-};
-
-
 const int SCREEN_WIDTH = 1000;
 const int SCREEN_HEIGHT = 700;
 const char WINDOW_NAME[] = "Ye'r Stinky";
-
-
-static ProjectMain projectMain;
-
-namespace projectmain {
-    void start();
-}
-
 
 #endif /* projectmain_hpp */
 

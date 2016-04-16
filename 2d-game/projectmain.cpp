@@ -8,25 +8,19 @@
 
 #include "projectmain.hpp"
 
+#include "inputhandler.hpp"
+#include "functions.hpp"
+#include "baseobjects.hpp"
+#include "world.hpp"
+
 using namespace std;
 
-
-void projectmain::start() {
-    projectMain.setup();
-}
+ProjectMain ProjectMain::projectInstance;
 
 
 ///////// projectMain /////////
 
 void ProjectMain::setup() {
-    TestClass class1;
-    TestClass class2;
-    class1.setChar('a');
-    class2.setChar('b');
-    
-    class1.printChar();
-    class2.printChar();
-
     
     bool sdlloaded = initializeSDL();
     
@@ -35,6 +29,8 @@ void ProjectMain::setup() {
         
         timeRunning = time(0);
         prefTime = getSecondsRunning();
+        
+        world::create();
         
         gameRunning = true;
         while (gameRunning) {
@@ -51,6 +47,7 @@ void ProjectMain::setup() {
 }
 
 
+
 void ProjectMain::loadResources() {
     std::string str = "";
     str.append(SDL_GetBasePath());
@@ -58,13 +55,6 @@ void ProjectMain::loadResources() {
     str.c_str();
     ttf_sans = TTF_OpenFont("/Users/jurriaanvandenberg/Documents/Programming/C++/2D game - SDL/2d-game/resources/plasmati.ttf", 50);
     cout << SDL_GetError() << endl;
-    cout << SDL_GetBasePath() << endl;
-}
-
-
-float ProjectMain::getSecondsRunning() {
-    double ticks = SDL_GetTicks();
-    return ticks / 1000;
 }
 
 
@@ -92,20 +82,19 @@ bool ProjectMain::initializeSDL() {
 }
 
 
-////// debug //////
-int size = 100;
-SDL_Rect rect;
-float posX = 0, posY = 0;
-double xding = 0;
+float ProjectMain::getSecondsRunning() {
+    double ticks = SDL_GetTicks();
+    return ticks / 1000;
+}
 
 
 
 void ProjectMain::updateLoop() {
+    
+    /* how many seconds have passed (unlocked framerate) */
     float milisecondsPassed = SDL_GetTicks() - previousTicks;
     secondsPassed = milisecondsPassed / 1000;
     previousTicks = SDL_GetTicks();
-    
-    handleEvents();
     
     /* fps */
     framesCounter += 1;
@@ -115,29 +104,14 @@ void ProjectMain::updateLoop() {
         framesCounter = 0;
     }
     
+    
+    inputHandler::handleEvents();
+    
+    world::update();
+        
     if (isKeyDown(SDL_SCANCODE_ESCAPE)) {
         gameRunning = false;
     }
-    
-    if (isKeyDown(SDL_SCANCODE_F)) {
-        xding += 3.14*2*secondsPassed;
-    }
-    
-    float speed = 500 * secondsPassed;
-    if (isKeyDown(SDL_SCANCODE_W)){
-        posY = posY - speed;}
-    if (isKeyDown(SDL_SCANCODE_S)){
-        posY = posY + speed;}
-    if (isKeyDown(SDL_SCANCODE_A)){
-        posX = posX - speed;}
-    if (isKeyDown(SDL_SCANCODE_D)){
-        posX = posX + speed;}
-    
-    int x = 0; int y = 0; SDL_GetMouseState(&x, &y);
-    double offsetx = sin(xding)*200;
-    rect.w = size; rect.h = size;
-    rect.x = posX + offsetx - rect.w/2;
-    rect.y = posY - rect.w/2;
 }
 
 
@@ -146,9 +120,8 @@ void ProjectMain::renderLoop() {
     SDL_RenderClear(renderer);
     
     
-    /* render square */
-    SDL_SetRenderDrawColor(renderer, 255, 0, 0, 255);
-    SDL_RenderFillRect(renderer, &rect);
+    world::render();
+    
     
     /* Render FPS */
     if (ttf_sans != NULL) {
@@ -158,22 +131,5 @@ void ProjectMain::renderLoop() {
         renderText(renderer, ttf_sans, buffer, 0, 0, color);
     }
     
-    
     SDL_RenderPresent(renderer); //update screen
 }
-
-///////// end - projectMain /////////
-
-
-
-void TestClass::setChar(char c) {
-    ch = c;
-}
-
-
-void TestClass::printChar() {
-    cout << ch << endl;
-}
-
-
-

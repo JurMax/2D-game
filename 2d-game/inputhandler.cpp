@@ -9,62 +9,91 @@
 #include "inputhandler.hpp"
 
 SDL_Scancode keysDown[16];
-int itemsInKeys = 0;
+bool keysPressed[16]; /* only active for one tick */
+
+int itemsInKeysDown = 0;
 
 
+/* public */
 bool isKeyDown(SDL_Scancode code) {
-    bool isPressed = false;
-    for (int i = 0; i < itemsInKeys; i++) {
+    bool isDown = false;
+    for (int i = 0; i < itemsInKeysDown; i++) {
         if (keysDown[i] == code) {
-            isPressed = true;
+            isDown = true;
             break;
+        }
+    }
+    return isDown;
+}
+
+
+bool isKeyPressed(SDL_Scancode code) {
+    bool isPressed = false;
+    for (int i = 0; i < itemsInKeysDown; i++) {
+        if (keysDown[i] == code && keysPressed[i]) {
+            isPressed = true;
+            break;  
         }
     }
     return isPressed;
 }
 
 
-void addKey(SDL_KeyboardEvent key) {
-    if (itemsInKeys < 16) {
+
+void inputHandler::handleEvents() {
+
+    /* set all keysPressed to false */
+    if (itemsInKeysDown > 0) {
+        for (int i = 0; i < itemsInKeysDown; i++) {
+            keysPressed[i] = false;
+        }
+    }
+    
+    SDL_Event e;
+    while( SDL_PollEvent( &e ) ){
+        if (e.type == SDL_QUIT) {
+            ProjectMain *project = ProjectMain::getInstance();
+            project->gameRunning = false;
+            break;
+        }
+        if (e.type == SDL_KEYDOWN) {
+            inputHandler::addKey(e.key);
+        }
+        if (e.type == SDL_KEYUP) {
+            inputHandler::removeKey(e.key);
+        }
+    }
+    
+}
+
+
+void inputHandler::addKey(SDL_KeyboardEvent key) {
+    if (itemsInKeysDown < 15) {
         bool isAlreadyAdded = false;
-        for (int i = 0; i < itemsInKeys; i++) {
+        for (int i = 0; i < itemsInKeysDown; i++) {
             if (keysDown[i] == key.keysym.scancode) {
                 isAlreadyAdded = true;
             }
         }
         if (isAlreadyAdded == false) {
-            keysDown[itemsInKeys] = key.keysym.scancode;
-            itemsInKeys += 1;
+            keysDown[itemsInKeysDown] = key.keysym.scancode;
+            keysPressed[itemsInKeysDown] = true;
+            itemsInKeysDown++;
         }
+        
     }
+    
 }
 
-void removeKey(SDL_KeyboardEvent key) {
-    if (itemsInKeys > 0) {
-        for (int i = 0; i < itemsInKeys; i++) {
+void inputHandler::removeKey(SDL_KeyboardEvent key) {
+    if (itemsInKeysDown > 0) {
+        for (int i = 0; i < itemsInKeysDown; i++) {
             if (keysDown[i] == key.keysym.scancode) {
-                for (int i2 = i; i2 < itemsInKeys-1; i2++) {
+                for (int i2 = i; i2 < itemsInKeysDown - 1; i2++) {
                     keysDown[i2] = keysDown[i2+1];
                 }
-                itemsInKeys -= 1;
+                itemsInKeysDown--;
             }
-        }
-    }
-}
-
-
-void handleEvents() {
-    SDL_Event e;
-    while( SDL_PollEvent( &e )){
-        if (e.type == SDL_QUIT) {
-            projectMain.gameRunning = false;
-            break;
-        }
-        if (e.type == SDL_KEYDOWN) {
-            addKey(e.key);
-        }
-        if (e.type == SDL_KEYUP) {
-            removeKey(e.key);
         }
     }
 }
