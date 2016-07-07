@@ -13,19 +13,29 @@
 #include <vector>
 #include <math.h>
 
-#import "baseobjects.hpp"
-#import "player.hpp"
 #import "projectmain.hpp"
+#import "player.hpp"
+#import "baseobjects.hpp"
+#import "worldchunk.hpp"
+
+using namespace std;
 
 
-extern std::vector<BaseObject> rectangles;
+extern vector<WorldChunk> chunks;
+extern vector<BaseObject> objects;
+
 extern Player player;
+extern Player player2;
+
+
 
 namespace world {
     void create();
 
     void update();
     void render();
+    
+    void debug();
 }
 
 

@@ -12,34 +12,44 @@
 #include <stdio.h>
 #include <SDL2/SDL.h>
 
+#include "projectmain.hpp"
+
 class BaseObject {
 public:
     float posX = 0;
     float posY = 0;
-    
     float velocityX = 0;
     float velocityY = 0;
-    
     float width = 0;
     float height = 0;
     
-    SDL_Color debugColor = { 255, 255, 255 };
+    int chunkID;
+    
+    GLuint vbo[2];
+    GLuint vao[1];
+    SDL_Color debugColor = { 255, 255, 255, 255 };
     
     bool onGround = false;
-    bool pushOut = true;  /* is impassable */
+    bool pushOut = true;
+    bool isMoving = false;
+
+    bool updateGLBuffers = true;
     
+
     void update();
-    void render(SDL_Renderer *renderer);
+    void render();
+    int collidesWith(BaseObject obj, float timePassed);
+    
+    void setBaseObject(float posx, float posy, float width, float height);
+    void updateBuffers();
+    
+    void destroy();
     
 };
 
-BaseObject createBaseObject(float posx, float posy, float wdth, float hght);
-
-
-
-class Rectangle: public BaseObject {
-};
-
+BaseObject createBaseObject(float posx, float posy, float width, float height);
 
 
 #endif /* baseobjects_hpp */
+
+

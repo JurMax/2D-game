@@ -14,9 +14,23 @@
 #include <vector>
 #include <math.h>
 
-#include <SDL2/SDL.h>
-#include <SDL2_image/SDL_image.h>
-#include <SDL2_ttf/SDL_ttf.h>
+#define GL3_PROTOTYPES 1
+#ifdef __APPLE__
+    #include <SDL2/SDL.h>
+    #include <SDL2_image/SDL_image.h>
+    #include <SDL2_ttf/SDL_ttf.h>
+#else
+    #include <SDL.h>
+    #include <SDL_image.h>
+    #include <SDL_ttf.h>
+#endif
+#include <glew.h>
+
+#include "functions.hpp"
+#include "renderer.hpp"
+#include "inputhandler.hpp"
+#include "baseobjects.hpp"
+#include "resources.hpp"
 
 
 class ProjectMain {
@@ -24,13 +38,18 @@ public:
     bool gameRunning;
     SDL_Window *window;
     SDL_Renderer *renderer;
-    TTF_Font *ttf_sans;
+    SDL_GLContext glContext;
     
-    float secondsPassed;
+    GLuint glProgram;
+    GLuint vertexShader, fragmentShader;
+    
+    double secondsPassed;
     int currentFPS = 0;
     
+    float screenOffsetX = 0;
+    float screenOffsetY = 0;
+    
 private:
-    static ProjectMain projectInstance;
     int previousTicks = 0;
     time_t timeRunning;  /* for fps calculation */
     int prefTime = 0;
@@ -38,23 +57,25 @@ private:
 
     
 public:
-    static ProjectMain* getInstance() {
-        return &projectInstance;
-    }
     void setup();
     void loadResources();
     float getSecondsRunning();
     
 
 private:
-    
     bool initializeSDL();
-
+    bool initializeGL();
+    
+    void runGame();
     void updateLoop();
     void renderLoop();
+    
+    void printglProgramLog();
 };
 
 
+extern ProjectMain projectMain;
+void start();
 
 const int SCREEN_WIDTH = 1000;
 const int SCREEN_HEIGHT = 700;

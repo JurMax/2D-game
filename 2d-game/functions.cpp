@@ -8,19 +8,103 @@
 
 #include "functions.hpp"
 
+const bool SCREEN_REPEAT = true;
+const bool STATIC_SCREEN = false;
+const bool SHOW_MOUSE = true;
 
-void renderText(SDL_Renderer *renderer, TTF_Font* font, char buffer[], int posx, int posy, SDL_Color color) {
-    SDL_Surface* surfaceMessage = TTF_RenderText_Solid(font, buffer, color);
-    SDL_Texture* texture = SDL_CreateTextureFromSurface(renderer, surfaceMessage);
-    
-    int stringwidth = 0, stringheight = 0;
-    TTF_SizeText(font, buffer, &stringwidth, &stringheight);
-    
-    SDL_Rect rect;
-    rect.x = posx; rect.y = posy;
-    rect.w = stringwidth; rect.h = stringheight;
-    SDL_RenderCopy(renderer, texture, NULL, &rect);
-    
-    SDL_FreeSurface(surfaceMessage);
-    SDL_DestroyTexture(texture);
+const bool IS_DEBUG = true;
+
+
+int getMouseX() {
+    int x, y;
+    SDL_GetMouseState(&x, &y);
+    return x - projectMain.screenOffsetX - SCREEN_WIDTH/2;
 }
+
+int getMouseY() {
+    int x, y;
+    SDL_GetMouseState(&x, &y);
+    return SCREEN_HEIGHT - y - projectMain.screenOffsetY - SCREEN_HEIGHT/2;
+}
+
+
+
+void printError(std::string str) {
+    if (IS_DEBUG) {
+        std::string errorString = "ERROR: " + str;
+        cout << errorString << endl;
+    }
+}
+
+
+
+void loadShader(int shaderType) {
+    bool isVertex = shaderType == GL_VERTEX_SHADER;
+    
+    GLuint *shader;
+    if (isVertex) {
+        shader = &projectMain.vertexShader;
+    } else {
+        shader = &projectMain.fragmentShader;
+    }
+    *shader = glCreateShader(shaderType);
+
+    
+    string fileName = "";
+    fileName.append(SDL_GetBasePath());
+    if (isVertex) fileName += "vertex.c";
+    else fileName += "fragment.c";
+    
+    std::string str = getFileContents(fileName.c_str());
+    char *c_str = new char[str.length()+1];
+    std::strcpy(c_str, str.c_str());
+    
+    
+    const GLchar *shaderSource[] = { c_str };
+    
+    glShaderSource(*shader, 1, shaderSource, NULL);
+    glCompileShader(*shader);
+    
+    GLint shaderCompiled = GL_FALSE;
+    glGetShaderiv(*shader, GL_COMPILE_STATUS, &shaderCompiled);
+    
+    if (shaderCompiled != GL_TRUE) {
+        string shaderstr;
+        if (isVertex) shaderstr = "vertex";
+        else shaderstr = "fragment";
+        
+        printf("Unable to compile %s shader [%d]:\n", shaderstr.c_str(), *shader);
+
+        int infoLogLength = 0;
+        int maxLength = infoLogLength;
+        glGetShaderiv(*shader, GL_INFO_LOG_LENGTH, &maxLength);
+        
+        char* infoLog = new char[maxLength];
+        glGetShaderInfoLog(*shader, maxLength, &infoLogLength, infoLog);
+        if (infoLogLength > 0) {
+            printf("%s\n", infoLog);
+        }
+        delete[] infoLog;
+    }
+    
+    glAttachShader(projectMain.glProgram, *shader);
+}
+
+
+std::string getFileContents(const char *filename)
+{
+    FILE *file = std::fopen(filename, "r");
+    if (file)
+    {
+        string contents;
+        std::fseek(file, 0, SEEK_END);
+        contents.resize(std::ftell(file));
+        std::rewind(file);
+        std::fread(&contents[0], 1, contents.size(), file);
+        std::fclose(file);
+        return(contents);
+    }
+    throw(errno);
+}
+
+

@@ -13,8 +13,6 @@
 using namespace std;
 
 int main(int argc, const char * argv[]) {
-    ProjectMain *main = ProjectMain::getInstance();
-    main->setup();
-    
+    start();
     return 0;
 }

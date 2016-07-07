@@ -50,13 +50,12 @@ void inputHandler::handleEvents() {
     }
     
     SDL_Event e;
-    while( SDL_PollEvent( &e ) ){
+    while(SDL_PollEvent( &e )) {
         if (e.type == SDL_QUIT) {
-            ProjectMain *project = ProjectMain::getInstance();
-            project->gameRunning = false;
+            projectMain.gameRunning = false;
             break;
         }
-        if (e.type == SDL_KEYDOWN) {
+          if (e.type == SDL_KEYDOWN) {
             inputHandler::addKey(e.key);
         }
         if (e.type == SDL_KEYUP) {

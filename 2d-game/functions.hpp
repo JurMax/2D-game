@@ -9,13 +9,32 @@
 #ifndef functions_hpp
 #define functions_hpp
 
-#include <stdio.h>
-#include <SDL2/SDL.h>
-#include <SDL2_ttf/SDL_ttf.h>
-
 #include "projectmain.hpp"
 
 
-void renderText(SDL_Renderer *renderer, TTF_Font* font, char buffer[], int posx, int posy, SDL_Color color);
+#define FLOATS_PER_POINT 2
+#define FLOATS_PER_COLOR 4
+#define FLOATS_PER_TEX_COORD 2
+#define ATTRIB_COUNT 3
+
+
+extern const bool SCREEN_REPEAT;
+extern const bool STATIC_SCREEN;
+extern const bool SHOW_MOUSE;
+
+extern const bool IS_DEBUG;
+
+
+//extern const uint32_t FLOATS_PER_POINT = 3;
+//extern const uint32_t FLOATS_PER_COLOR = 4;
+
+
+int getMouseX();
+int getMouseY();
+void printError(std::string str);
+
+void loadShader(int shaderType);
+std::string getFileContents(const char *filename);
+
 
 #endif /* functions_hpp */

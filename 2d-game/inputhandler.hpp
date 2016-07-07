@@ -11,7 +11,8 @@
 
 #include <stdio.h>
 #include <SDL2/SDL.h>
-#include "ProjectMain.hpp"  
+
+#include "projectmain.hpp"
 
 
 bool isKeyDown(SDL_Scancode code);
