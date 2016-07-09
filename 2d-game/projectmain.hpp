@@ -45,6 +45,7 @@ public:
     
     double secondsPassed;
     int currentFPS = 0;
+    int glTriangleCount = 0;
     
     float screenOffsetX = 0;
     float screenOffsetY = 0;

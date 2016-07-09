@@ -21,6 +21,7 @@ namespace renderer {
     GLuint glAttrib_position = -1;
     GLuint glAttrib_color = -1;
     GLuint glAttrib_textureCoords = -1;
+    GLuint glAttrib_barycentric = -1;
 
 
     GLuint m_vbo[ATTRIB_COUNT], m_vao[1];
@@ -67,6 +68,13 @@ namespace renderer {
             printError("vertexTexCoord is not a valid glsl program variable!");
             succes = false;
         }
+        glAttrib_barycentric = glGetAttribLocation(glProgram, "vertexBarycentric");
+        if(glAttrib_barycentric == -1) {
+            printError("vertexBarycentric is not a valid glsl program variable!");
+            succes = false;
+        }
+        
+        
         
         glGenBuffers(ATTRIB_COUNT, m_vbo);
         glGenVertexArrays(1, m_vao);
@@ -74,6 +82,8 @@ namespace renderer {
         glEnableVertexAttribArray(glAttrib_position);
         glEnableVertexAttribArray(glAttrib_color);
         glEnableVertexAttribArray(glAttrib_textureCoords);
+        glEnableVertexAttribArray(glAttrib_barycentric);
+
         
         return succes;
     }
@@ -93,7 +103,7 @@ namespace renderer {
         float screenOffset[] = { (float) projectMain.screenOffsetX, (float) projectMain.screenOffsetY };
         glUniform2fv(glUniform_screenPos, 1, screenOffset);
 
-        static bool antialiasEnabled = true;
+        static bool antialiasEnabled = false;
         if (isKeyPressed(SDL_SCANCODE_L)) {
             antialiasEnabled = !antialiasEnabled;
         }
@@ -104,97 +114,143 @@ namespace renderer {
     
     
     void glRenderRect(SDL_Color color, float posX, float posY, float width, float height) {
-        const uint32_t points = 4;
+        const int points = 6;
         
-        GLfloat square[points][FLOATS_PER_POINT] = {
-            {  posX        ,  posY + height  }, // Top left
-            {  posX + width,  posY + height  }, // Top right
-            {  posX + width,  posY           }, // Bottom right
-            {  posX        ,  posY           }  // Bottom left
-        };
-        const GLfloat colors[points][FLOATS_PER_COLOR] = {
-            { (float) (color.r)/255, (float) (color.g)/255, (float) (color.b)/255, (float) (color.a)/255 }, // Top left
-            { (float) (color.r)/255, (float) (color.g)/255, (float) (color.b)/255, (float) (color.a)/255 }, // Top right
-            { (float) (color.r)/255, (float) (color.g)/255, (float) (color.b)/255, (float) (color.a)/255 }, // Bottom right
-            { (float) (color.r)/255, (float) (color.g)/255, (float) (color.b)/255, (float) (color.a)/255 }  // Bottom left
+        GLfloat square[points * FLOATS_PER_POINT] = {
+           posX        ,  posY + height,  // Top left
+           posX + width,  posY + height,  // Top right
+           posX + width,  posY,           // Bottom right
+            
+           posX + width,  posY,           // Bottom right
+           posX        ,  posY,           // Bottom left
+           posX        ,  posY + height   // Top left
         };
         
-        const GLfloat textureCoords[points][FLOATS_PER_TEX_COORD] = {
-            { 0.0f, 0.0f }, // Top left
-            { 1.0f, 0.0f }, // Top right
-            { 1.0f, 1.0f }, // Bottom right
-            { 0.0f, 1.0f }  // Bottom left
+        GLfloat colors[points * FLOATS_PER_COLOR] = {
+           (float) (color.r)/255, (float) (color.g)/255, (float) (color.b)/255, (float) (color.a)/255,  // Top left
+           (float) (color.r)/255, (float) (color.g)/255, (float) (color.b)/255, (float) (color.a)/255,  // Top right
+           (float) (color.r)/255, (float) (color.g)/255, (float) (color.b)/255, (float) (color.a)/255,  // Bottom right
+            
+           (float) (color.r)/255, (float) (color.g)/255, (float) (color.b)/255, (float) (color.a)/255,  // Bottom right
+           (float) (color.r)/255, (float) (color.g)/255, (float) (color.b)/255, (float) (color.a)/255,  // Bottom left
+           (float) (color.r)/255, (float) (color.g)/255, (float) (color.b)/255, (float) (color.a)/255   // Top left
         };
         
-        glBindVertexArray(m_vao[0]);
+        GLfloat texturecoords[points * FLOATS_PER_TEX_COORD] = {
+           0.0f, 0.0f,  // Top left
+           1.0f, 0.0f,  // Top right
+           1.0f, 1.0f,  // Bottom right
+            
+           1.0f, 1.0f,  // Bottom right
+           0.0f, 1.0f,  // Bottom left
+           0.0f, 0.0f   // Top left
+        };
         
-        glBindBuffer(GL_ARRAY_BUFFER, m_vbo[0]);
-        glBufferData(GL_ARRAY_BUFFER, (points * FLOATS_PER_POINT) * sizeof(GLfloat), square, GL_STATIC_DRAW);
-        glVertexAttribPointer(glAttrib_position, FLOATS_PER_POINT, GL_FLOAT, GL_FALSE, 0, 0);
+        GLfloat barycentric[points * FLOATS_PER_BARYCENTRIC] = {
+            1.0f, 0.0f, 0.0f,  // Top left
+            0.0f, 1.0f, 0.0f,  // Top right
+            0.0f, 0.0f, 1.0f,  // Bottom right
+            
+            1.0f, 0.0f, 0.0f,  // Bottom right
+            0.0f, 1.0f, 0.0f,  // Bottom left
+            0.0f, 0.0f, 1.0f   // Top left
+        };
         
-        glBindBuffer(GL_ARRAY_BUFFER, m_vbo[1]);
-        glBufferData(GL_ARRAY_BUFFER, (points * FLOATS_PER_COLOR) * sizeof(GLfloat), colors, GL_STATIC_DRAW);
-        glVertexAttribPointer(glAttrib_color, FLOATS_PER_COLOR, GL_FLOAT, GL_FALSE, 0, 0);
-        
-        glBindBuffer(GL_ARRAY_BUFFER, m_vbo[2]);
-        glBufferData(GL_ARRAY_BUFFER, (points * FLOATS_PER_TEX_COORD) * sizeof(GLfloat), textureCoords, GL_STATIC_DRAW);
-        glVertexAttribPointer(glAttrib_textureCoords, FLOATS_PER_TEX_COORD, GL_FLOAT, GL_FALSE, 0, 0);
-        
-        glActiveTexture(GL_TEXTURE0);
-        glBindTexture(GL_TEXTURE_2D, r::texture_Blank);
-        glUniform1i(glUniform_texture, 0);
-
-        glDrawArrays(GL_TRIANGLE_FAN, 0, 4);
-        
+        glRenderArrays(points, square, colors, texturecoords, barycentric, r::texture_Blank);
     }
     
     
     void glRenderCircle(SDL_Color color, float posX, float posY, float width, float height) {
-        const uint32_t points = 36;
+        const int vertices = 48;
+        const int points = vertices * 3;
+        const float DEG2RAD = 3.14159265359 / 180;
         
-        GLfloat circle[points][FLOATS_PER_POINT];
-        GLfloat colors[points][FLOATS_PER_COLOR];
-        GLfloat textureCoords[points][FLOATS_PER_TEX_COORD];
+        GLfloat circle[points * FLOATS_PER_POINT];
+        GLfloat colors[points * FLOATS_PER_COLOR];
+        GLfloat textureCoords[points * FLOATS_PER_TEX_COORD];
+        GLfloat barycentric[points * FLOATS_PER_BARYCENTRIC];
         
-        const float DEG2RAD = 3.14159/180;
-        for (int i = 0; i < points; i++) {
-            float degInRad = (360/points*i) * DEG2RAD;
+        for (int i = 0; i < points; i += 3) {
+            if (isKeyPressed(SDL_SCANCODE_P)) {
+                cout << i << endl;
+            }
+            float fp = points;
+            float fi = i;
+            float degInRad = (360.0f / fp * fi) * DEG2RAD;
+            float degInRadNext = (360.0f / fp * (fi + 3)) * DEG2RAD;
             
-            circle[i][0] = (float) cos(degInRad) * (width/2) + (width/2) + posX;
-            circle[i][1] = (float) sin(degInRad) * (height/2) + (height/2) + posY;
+            circle[(i + 0) * 2 + 0] = posX + width/2;
+            circle[(i + 0) * 2 + 1] = posY + height/2;
+            circle[(i + 1) * 2 + 0] = cos(degInRad) * (width/2) + (width/2) + posX;
+            circle[(i + 1) * 2 + 1] = sin(degInRad) * (height/2) + (height/2) + posY;
+            circle[(i + 2) * 2 + 0] = cos(degInRadNext) * (width/2) + (width/2) + posX;
+            circle[(i + 2) * 2 + 1] = sin(degInRadNext) * (height/2) + (height/2) + posY;
+            
+            for (int i2 = 0; i2 < 3; i2++) {
+                colors[(i + i2) * 4 + 0] = (float) (color.r) / 255.0f;
+                colors[(i + i2) * 4 + 1] = (float) (color.g) / 255.0f;
+                colors[(i + i2) * 4 + 2] = (float) (color.b) / 255.0f;
+                colors[(i + i2) * 4 + 3] = (float) (color.a) / 255.0f;
+            }
+            
+            textureCoords[(i + 0) * 2 + 0] = -0.5f;
+            textureCoords[(i + 0) * 2 + 1] = 0.5f;
+            textureCoords[(i + 1) * 2 + 0] = (cos(degInRad)/2 - 0.5f);
+            textureCoords[(i + 1) * 2 + 1] = (0.5f - sin(degInRad)/2);
+            textureCoords[(i + 2) * 2 + 0] = (cos(degInRadNext)/2 - 0.5f);
+            textureCoords[(i + 2) * 2 + 1] = (0.5f - sin(degInRadNext)/2);
 
-            colors[i][0] = (float) (color.r)/255;
-            colors[i][1] = (float) (color.g)/255;
-            colors[i][2] = (float) (color.b)/255;
-            colors[i][3] = (float) (color.a)/255;
-            
-            textureCoords[i][0] = (cos(degInRad)/2 - 0.5f);
-            textureCoords[i][1] = (0.5f - sin(degInRad)/2);
+            barycentric[(i + 0) * 3 + 0] = 1;
+            barycentric[(i + 0) * 3 + 1] = 1;
+            barycentric[(i + 0) * 3 + 2] = 1;
+            barycentric[(i + 1) * 3 + 0] = 0;
+            barycentric[(i + 1) * 3 + 1] = 1;
+            barycentric[(i + 1) * 3 + 2] = 0;
+            barycentric[(i + 2) * 3 + 0] = 0;
+            barycentric[(i + 2) * 3 + 1] = 0;
+            barycentric[(i + 2) * 3 + 2] = 1;
         }
+        
+        glRenderArrays(points, circle, colors, textureCoords, barycentric, r::texture_Blank);
+    }
+
+    
+    
+    void glRenderArrays(int points, GLfloat* vertices, GLfloat* colors, GLfloat* texturecoords, GLfloat* barycentric, GLuint texture) {
         
         glBindVertexArray(m_vao[0]);
         
+        // position points //
         glBindBuffer(GL_ARRAY_BUFFER, m_vbo[0]);
-        glBufferData(GL_ARRAY_BUFFER, (points * FLOATS_PER_POINT) * sizeof(GLfloat), circle, GL_STATIC_DRAW);
+        glBufferData(GL_ARRAY_BUFFER, (points * FLOATS_PER_POINT) * sizeof(GLfloat), vertices, GL_STATIC_DRAW);
         glVertexAttribPointer(glAttrib_position, FLOATS_PER_POINT, GL_FLOAT, GL_FALSE, 0, 0);
         
+        // color //
         glBindBuffer(GL_ARRAY_BUFFER, m_vbo[1]);
         glBufferData(GL_ARRAY_BUFFER, (points * FLOATS_PER_COLOR) * sizeof(GLfloat), colors, GL_STATIC_DRAW);
         glVertexAttribPointer(glAttrib_color, FLOATS_PER_COLOR, GL_FLOAT, GL_FALSE, 0, 0);
         
+        // texture coords //
         glBindBuffer(GL_ARRAY_BUFFER, m_vbo[2]);
-        glBufferData(GL_ARRAY_BUFFER, (points * FLOATS_PER_TEX_COORD) * sizeof(GLfloat), textureCoords, GL_STATIC_DRAW);
+        glBufferData(GL_ARRAY_BUFFER, (points * FLOATS_PER_TEX_COORD) * sizeof(GLfloat), texturecoords, GL_STATIC_DRAW);
         glVertexAttribPointer(glAttrib_textureCoords, FLOATS_PER_TEX_COORD, GL_FLOAT, GL_FALSE, 0, 0);
         
+        // texture ///
         glActiveTexture(GL_TEXTURE0);
-        glBindTexture(GL_TEXTURE_2D, r::texture_Debug);
+        glBindTexture(GL_TEXTURE_2D, texture);
         glUniform1i(glUniform_texture, 0);
-
         
-        glDrawArrays(GL_TRIANGLE_FAN, 0, points);
+        // barycentric //
+        glBindBuffer(GL_ARRAY_BUFFER, m_vbo[3]);
+        glBufferData(GL_ARRAY_BUFFER, (points * FLOATS_PER_BARYCENTRIC) * sizeof(GLfloat), barycentric, GL_STATIC_DRAW);
+        glVertexAttribPointer(glAttrib_barycentric, FLOATS_PER_BARYCENTRIC, GL_FLOAT, GL_FALSE, 0, 0);
         
+        
+        glDrawArrays(GL_TRIANGLES, 0, points);
+        
+        projectMain.glTriangleCount += points/3;
     }
-    
+
     
     
     void loadShader(int shaderType) {

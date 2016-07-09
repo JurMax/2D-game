@@ -34,6 +34,8 @@ namespace renderer {
     void glRenderRect(SDL_Color color, float posX, float posY, float width, float height);
     void glRenderCircle(SDL_Color color, float posX, float posY, float width, float height);
     
+    void glRenderArrays(int points, GLfloat* vertices, GLfloat* colors, GLfloat* texturecoords, GLfloat* barycentric, GLuint texture);
+    
     /*
     void renderRectangle(float posx, float posy, float sizex, float sizey, SDL_Color color);
     void renderRectangle(SDL_Rect rect, SDL_Color color);

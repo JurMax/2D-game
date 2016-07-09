@@ -138,7 +138,11 @@ bool ProjectMain::initializeGL() {
                 delete[] shaderProgramInfoLog;
             }
             else {
-
+                glEnable(GL_BLEND);
+                //glBlendEquation(GL_FUNC_ADD);
+                glBlendFunc(GL_ONE, GL_ONE_MINUS_SRC_ALPHA);
+                
+                
                 return true;
             }
         }
@@ -201,9 +205,6 @@ void ProjectMain::renderLoop() {
     glUseProgram(glProgram);
     glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
     
-    glEnable(GL_BLEND);
-    glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
-    
     renderer::setUniforms();
 
     world::render();
@@ -236,8 +237,9 @@ void ProjectMain::renderLoop() {
     
     
     static char buffer[64];
-    sprintf(buffer, "SDL Game Window  |  JurMax  |  FPS: %i", currentFPS);
+    sprintf(buffer, "SDL Game Window | JurMax  |  Triangles: %i | FPS: %i", glTriangleCount, currentFPS);
     SDL_SetWindowTitle(window, buffer);
+    glTriangleCount = 0;
     
     GLenum err;
     while ( ( err = glGetError() ) != GL_NO_ERROR) {

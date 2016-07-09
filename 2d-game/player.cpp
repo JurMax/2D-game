@@ -179,7 +179,7 @@ void Player::render() {
 
 void Player::renderPlayer() {
     if (!isDead) {
-    SDL_Color skinColor = { 0xFF, 255, 255, 255 };
+        SDL_Color skinColor = { 0xFF, 255, 255, 255 };
         SDL_Color secondaryColor = { 200, 200, 200, 255 };
         
         const float EAR_OFFSET_Y = 12;

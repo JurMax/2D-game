@@ -15,7 +15,8 @@
 #define FLOATS_PER_POINT 2
 #define FLOATS_PER_COLOR 4
 #define FLOATS_PER_TEX_COORD 2
-#define ATTRIB_COUNT 3
+#define FLOATS_PER_BARYCENTRIC 3
+#define ATTRIB_COUNT 4
 
 
 extern const bool SCREEN_REPEAT;
