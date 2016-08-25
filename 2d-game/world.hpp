@@ -13,23 +13,25 @@
 #include <vector>
 #include <math.h>
 
-#import "projectmain.hpp"
-#import "player.hpp"
-#import "baseobjects.hpp"
-#import "worldchunk.hpp"
+#include "projectmain.hpp"
+#include "player.hpp"
+#include "baseobjects.hpp"
+#include "worldchunk.hpp"
 
 using namespace std;
 
 
-extern vector<WorldChunk> chunks;
-extern vector<BaseObject> objects;
-
-extern Player player;
-extern Player player2;
-
-
-
 namespace world {
+    
+    extern vector<WorldChunk> chunks;
+    extern vector<BaseObject> objects;
+    
+    extern Player player;
+    
+    extern bool isMoving;
+    extern float cameraSpeed;
+    
+    
     void create();
 
     void update();
@@ -40,3 +42,6 @@ namespace world {
 
 
 #endif /* world_hpp */
+
+
+

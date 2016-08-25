@@ -1,9 +1,9 @@
 #version 330
 
 uniform vec2 u_screenSize;
-uniform sampler2D u_texture;
-
 uniform vec4 u_settings;
+
+uniform sampler2D u_shapeTexture;
 
 in vec4 fragmentColor;
 in vec2 fragmentTexCoord;
@@ -85,7 +85,7 @@ vec4 PostFX(sampler2D tex, vec2 uv, float time) {
 
 float edgeFactor(){
     vec3 delta = fwidth(fragmentBarycentric);
-    vec3 a3 = smoothstep(vec3(0.0), delta * 1.2, fragmentBarycentric);
+    vec3 a3 = smoothstep(vec3(0.0), delta * 0.9, fragmentBarycentric);
     return a3.x;//min(min(a3.x, a3.y), a3.z);
 }
 
@@ -93,13 +93,13 @@ void main() {
     
     if (u_settings[0] == 1.0) {  // antialiasing enabled
         //colorOut = fragmentColor * PostFX(u_texture, fragmentTexCoord.st, 0.0);
-        colorOut = fragmentColor * texture(u_texture, fragmentTexCoord);
+        colorOut = fragmentColor * texture(u_shapeTexture, fragmentTexCoord);
         
         float alpha = mix(0.0, 1.0, edgeFactor());
         colorOut.rgb *= alpha;
         colorOut.a *= alpha;
     } else {
-        colorOut = fragmentColor * texture(u_texture, fragmentTexCoord);
+        colorOut = fragmentColor * texture(u_shapeTexture, fragmentTexCoord);
     }
 
     colorOut.rgb *= fragmentColor.a;

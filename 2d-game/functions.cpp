@@ -15,16 +15,16 @@ const bool SHOW_MOUSE = true;
 const bool IS_DEBUG = true;
 
 
-int getMouseX() {
+float getMouseX() {
     int x, y;
     SDL_GetMouseState(&x, &y);
-    return x - projectMain.screenOffsetX - SCREEN_WIDTH/2;
+    return (float) (x) / ((float) SCREEN_WIDTH / 100.0f) + projectMain.cameraOffsetX + projectMain.debugCameraOffsetX;
 }
 
-int getMouseY() {
+float getMouseY() {
     int x, y;
     SDL_GetMouseState(&x, &y);
-    return SCREEN_HEIGHT - y - projectMain.screenOffsetY - SCREEN_HEIGHT/2;
+    return (float) (-y) / ((float) SCREEN_WIDTH / 100.0f) + projectMain.cameraOffsetY + projectMain.debugCameraOffsetY + 77.5;
 }
 
 
@@ -91,11 +91,9 @@ void loadShader(int shaderType) {
 }
 
 
-std::string getFileContents(const char *filename)
-{
+std::string getFileContents(const char *filename) {
     FILE *file = std::fopen(filename, "r");
-    if (file)
-    {
+    if (file) {
         string contents;
         std::fseek(file, 0, SEEK_END);
         contents.resize(std::ftell(file));

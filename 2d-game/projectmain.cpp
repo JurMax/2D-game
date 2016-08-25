@@ -9,6 +9,7 @@
 #include "projectmain.hpp"
 
 #include "world.hpp"
+#include "desk.hpp"
 
 using namespace std;
 
@@ -20,7 +21,10 @@ void start() {
 }
 
 
-///////// projectMain /////////
+
+
+///////// ProjectMain /////////
+
 
 void ProjectMain::setup() {
     
@@ -141,7 +145,7 @@ bool ProjectMain::initializeGL() {
                 glEnable(GL_BLEND);
                 //glBlendEquation(GL_FUNC_ADD);
                 glBlendFunc(GL_ONE, GL_ONE_MINUS_SRC_ALPHA);
-                
+                glClearColor(0.1, 0.1, 0.1, 1.0);
                 
                 return true;
             }
@@ -154,15 +158,18 @@ bool ProjectMain::initializeGL() {
 
 
 void ProjectMain::runGame() {
-    timeRunning = time(0);
     prefTime = getSecondsRunning();
-    previousTicks = SDL_GetTicks();
+    
+    int framerate = 60;  // TODO: check for other v-sync framerates.
+    framerateModifier = 60.0f / (float) framerate;
     
     
     if (!SHOW_MOUSE)
         SDL_ShowCursor(SDL_DISABLE);
 
+    
     world::create();
+    desk::create();
     
     gameRunning = true;
     while (gameRunning) {
@@ -174,11 +181,6 @@ void ProjectMain::runGame() {
 
 void ProjectMain::updateLoop() {
     
-    /* how many seconds have passed (for unlocked framerates) */
-    float milisecondsPassed = SDL_GetTicks() - previousTicks;
-    secondsPassed = milisecondsPassed / 1000;
-    previousTicks = SDL_GetTicks();
-    
     /* fps */
     framesCounter += 1;
     if (getSecondsRunning() > prefTime) {
@@ -187,16 +189,22 @@ void ProjectMain::updateLoop() {
         framesCounter = 0;
     }
     
+    
     inputHandler::handleEvents();
+    
+    if (isKeyDown(SDL_SCANCODE_ESCAPE)) {
+        gameRunning = false;
+    }
     
     if (isKeyPressed(SDL_SCANCODE_M)) {
         SDL_ShowCursor(SDL_ENABLE);
     }
     
     world::update();
+    desk::update();
     
-    if (isKeyDown(SDL_SCANCODE_ESCAPE)) {
-        gameRunning = false;
+    if (DEBUG) {
+        debug::update();
     }
 }
 
@@ -206,38 +214,30 @@ void ProjectMain::renderLoop() {
     glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
     
     renderer::setUniforms();
-
+    
     world::render();
+    desk::render();
     
+    if (DEBUG) {
+        debug::render();
+    }
     
-    // Render FPS //
-    /*if (r::ttf_sans != NULL) {
-        char buffer[16];
-        sprintf(buffer, "FPS: %i", currentFPS);
-        render::renderText(r::ttf_sans, buffer, 0, 0, { 255, 255, 255, 255 });
-    }*/
     
     if (!SHOW_MOUSE || true) {
         float x = getMouseX();
         float y = getMouseY();
         
-        float size = 40;
-        renderer::glRenderRect({ 0, 0, 0, 150 }, x - size/2, y - size/2, size, size);
-        renderer::glRenderRect({ 255, 255, 255, 150 }, x - (size-2)/2, y - (size-2)/2, size-2, size-2);
+        float size = 5;
+        renderer::glRenderCircle({ 0, 0, 0, 150 }, x - size/2, y - size/2, size, size);
+        renderer::glRenderCircle({ 255, 255, 255, 150 }, x - (size-2)/2, y - (size-2)/2, size-2, size-2);
     }
     
-    if (isKeyPressed(SDL_SCANCODE_1)) {
-        float r = (float) rand() / (float) RAND_MAX;
-        float g = (float) rand() / (float) RAND_MAX;
-        float b = (float) rand() / (float) RAND_MAX;
-        glClearColor(r, g, b, 1.0);
-    }
     
     SDL_GL_SwapWindow(window);
     
     
     static char buffer[64];
-    sprintf(buffer, "SDL Game Window | JurMax  |  Triangles: %i | FPS: %i", glTriangleCount, currentFPS);
+    sprintf(buffer, "SDL | JurMax  |  Triangles: %i | FPS: %i", glTriangleCount, currentFPS);
     SDL_SetWindowTitle(window, buffer);
     glTriangleCount = 0;
     

@@ -14,14 +14,14 @@
 
 using namespace std;
 
-
-int gravity = 4000;
+float speed = 3;
+float gravity = 0.25;
 
 
 const int BLINK_TIME = 5;
 int nextBlink = 200;
 int blinkTime = 200;
-bool isBlinking = false;;
+bool isBlinking = false;
 
 
 Player createPlayer() {
@@ -32,8 +32,8 @@ Player createPlayer() {
     p.posX = 0;
     p.posY = 200;
     
-    p.width = 50;  /* 1 pixel = 1 cm */
-    p.height = 50;
+    p.width = 12.5;
+    p.height = 12.5;
     
     p.volume = p.width * p.height;
     
@@ -46,6 +46,7 @@ Player createPlayer() {
     p.heightup = SDL_SCANCODE_X;
     p.shrink = SDL_SCANCODE_T;
     p.grow = SDL_SCANCODE_G;
+
     
     glGenBuffers(2, p.vbo);
     glGenVertexArrays(1, p.vao);
@@ -67,7 +68,13 @@ void Player::setPlayer2() {
 }
 
 
+
 void Player::update() {
+    
+//    debug::add(&height, "height");
+//    debug::add(&volume, "volume");
+//    debug::add(&speed, "speed");
+//    debug::add(&facingLeft, "facingLeft");
 
     if (!isDead) {
         blinkTime += 1;
@@ -96,17 +103,43 @@ void Player::update() {
             velocityX = -speed;
             facingLeft = true;
         }
-        
         else if (isKeyDown(right)) {
             velocityX = speed;
             facingLeft = false;
-        } else {
-            velocityX *= 0.8;
+        }
+        velocityX *= 0.7 * projectMain.framerateModifier;
+
+        if (isKeyDown(jump) && onGround) {
+            velocityY = 4;
         }
         
-        if (isKeyDown(jump) && onGround) {
-            velocityY = 1500;
+        static bool gravityEnabled;
+        if (isKeyPressed(SDL_SCANCODE_SPACE)) {
+            if (gravityEnabled) gravityEnabled = false;
+            else gravityEnabled = true;
         }
+        
+        if (gravityEnabled) {
+            velocityY -= gravity * projectMain.framerateModifier;  // gravity
+        } else {
+            if (isKeyDown(SDL_SCANCODE_W))
+                velocityY = speed;
+            if (isKeyDown(SDL_SCANCODE_S))
+                velocityY = -speed;
+            velocityY *= 0.7 * projectMain.framerateModifier;
+        }
+        
+        //velocityX *= 40 * projectMain.secondsPassed;
+        
+        
+        if (fabs(velocityX) < 0.0001f)
+            velocityX = 0;
+        if (fabs(velocityY) < 0.0001f)
+            velocityY = 0;
+        
+        
+        posY += velocityY * projectMain.framerateModifier;
+        posX += velocityX * projectMain.framerateModifier;
         
         
         if (isKeyDown(heightup))
@@ -115,10 +148,12 @@ void Player::update() {
             height -= 2;
         if (height < 5) height = 5;
         
+        
+        
         double factor = 1.03;
         if (isKeyDown(grow)) {
             height *= factor;
-            volume *= factor*factor;
+            volume *= factor * factor;
             leftEarRotation -= 3;
             rightEarRotation -= 3;
         }
@@ -131,43 +166,14 @@ void Player::update() {
         width = volume / height;
         
         
-        static bool gravityEnabled;
-        if (isKeyPressed(SDL_SCANCODE_SPACE)) {
-            if (gravityEnabled) gravityEnabled = false;
-            else gravityEnabled = true;
-        }
-        
-        if (gravityEnabled) {
-            velocityY -= gravity * projectMain.secondsPassed; /* gravity */
-        } else {
-            if (isKeyDown(SDL_SCANCODE_W))
-                velocityY = speed;
-            if (isKeyDown(SDL_SCANCODE_S))
-                velocityY = -speed;
-            velocityY *= 40 * projectMain.secondsPassed;
-        }
-        
-        
-    
-        //velocityX *= 40 * projectMain.secondsPassed;
-        
-        
-        if (fabs(velocityX) < 0.0001f)
-            velocityX = 0;
-        if (fabs(velocityY) < 0.0001f)
-            velocityY = 0;
-        
-        
-        posY += velocityY * projectMain.secondsPassed;
-        posX += velocityX * projectMain.secondsPassed;
-        
         resolveHitboxes();
         
     }
     else if (isDead) {
-        if (isKeyPressed(SDL_SCANCODE_R)) {
-            respawn();
-        }
+    }
+    
+    if (isKeyPressed(SDL_SCANCODE_R)) {
+        respawn();
     }
 }
 
@@ -182,21 +188,21 @@ void Player::renderPlayer() {
         SDL_Color skinColor = { 0xFF, 255, 255, 255 };
         SDL_Color secondaryColor = { 200, 200, 200, 255 };
         
-        const float EAR_OFFSET_Y = 12;
-        float EAR_DISTANCE = 12;
-        const float EAR_WIDTH = 20;
-        const float EAR_HEIGHT = 50;
+        const float EAR_OFFSET_Y = 3;
+        float EAR_DISTANCE = 3;
+        const float EAR_WIDTH = 5;
+        const float EAR_HEIGHT = 12.5;
         
         float earPosX = posX + width/2 - EAR_WIDTH/2;
         if (facingLeft) {
-            earPosX += 4;
+            earPosX += 1;
             EAR_DISTANCE *= -1;
             
             leftEarRotation *= -1;
             rightEarRotation *= -1;
         }
         else {
-            earPosX -= 4;
+            earPosX -= 2;
         }
         
         
@@ -208,16 +214,16 @@ void Player::renderPlayer() {
 
         
         /* eyes */
-        const float EYE_WIDTH = 8;
-        float EYE_HEIGHT = 20;
+        const float EYE_WIDTH = 2;
+        float EYE_HEIGHT = 5;
         if (isBlinking) {
-            EYE_HEIGHT = 3;
+            EYE_HEIGHT = 0.5;
         }
-        const float EYE_DISTANCE = 10;
-        const float EYE_OFFSET = 6;
+        const float EYE_DISTANCE = 2.5;
+        const float EYE_OFFSET = 1.5;
         SDL_Color eyeColor = { 0, 0, 0, 255 };
         
-        float eyePosY = posY + height/2 - EYE_HEIGHT/2 + 4;
+        float eyePosY = posY + height/2 - EYE_HEIGHT/2 + 1;
         float eyePosX = posX + width/2 - EYE_WIDTH/2;
         if (facingLeft) eyePosX -= EYE_OFFSET;
         else eyePosX += EYE_OFFSET;
@@ -233,6 +239,7 @@ void Player::renderPlayer() {
             leftEarRotation *= -1;
             rightEarRotation *= -1;
         }
+        
     }
     else if (isDead) {
         renderer::glRenderRect({ 255, 0, 0, 150 }, posX - 1000, posY - 1000, 2000, 2000);
@@ -247,22 +254,12 @@ void Player::resolveHitboxes() {
     bool collideY = false;
     
 
-    if (posY < -400) {
+    if (posX + width < projectMain.cameraOffsetX) {
         setDead();
     }
-    
-    if (STATIC_SCREEN) {
-        if (posX > SCREEN_WIDTH) {
-            posX = -width;
-        } if (posX < -width) {
-            posX = SCREEN_WIDTH;
-        }
-    }
-    
-    
 
-    for (int i = 0; i < objects.size(); i++) {
-        BaseObject rect;
+    for (float i = 0; i < world::objects.size(); i++) {
+        BaseObject rect = world::objects.at(i);
         /*
         if (i == rectangles.size()) {
             if (isPlayer2) {
@@ -272,9 +269,8 @@ void Player::resolveHitboxes() {
             }
         } else {
         }*/
-        rect = objects.at(i);
 
-        double highestDistance = max(fabs(velocityX) * projectMain.secondsPassed, fabs(velocityY) * projectMain.secondsPassed);
+        double highestDistance = max(fabs(velocityX) * projectMain.framerateModifier, fabs(velocityY) * projectMain.framerateModifier);
         
         for (int i2 = 0; i2 < highestDistance; i2++) {
             double timePassed;
@@ -284,27 +280,29 @@ void Player::resolveHitboxes() {
                 timePassed = i2 / fabs(velocityY);
             }
             
-            int c = collidesWith(rect, timePassed);
-            if (c != 0) {
-                if (c == 1) {  /* left */
-                    posX = rect.posX - width;
-                    collideX = true;
-                    velocityX = 0;
-                } else if (c == 2) {  /* right */
-                    posX = rect.posX + rect.width;
-                    collideX = true;
-                    velocityX = 0;
-                } else if (c == 3) {  /* bottom */
-                    posY = rect.posY - height;
-                    collideY = true;
-                    velocityY = 0;
-                } else if (c == 4) {  /* top */
-                    posY = rect.posY + rect.height;
-                    collideY = true;
-                    onGround = true;
-                }
-                break;
+            
+        }
+        
+        int c = collidesWith(rect, projectMain.framerateModifier);
+        if (c != 0) {
+            if (c == 1) {  /* left */
+                posX = rect.posX - width;
+                collideX = true;
+                velocityX = 0;
+            } else if (c == 2) {  /* right */
+                posX = rect.posX + rect.width;
+                collideX = true;
+                velocityX = 0;
+            } else if (c == 3) {  /* bottom */
+                posY = rect.posY - height;
+                collideY = true;
+                velocityY = 0;
+            } else if (c == 4) {  /* top */
+                posY = rect.posY + rect.height;
+                collideY = true;
+                onGround = true;
             }
+            //break;
         }
     }
     
@@ -322,15 +320,15 @@ void Player::resolveHitboxes() {
 
 
 void Player::setDead() {
-    isDead = true;
+    //isDead = true;
 }
 
 
 void Player::respawn() {
     
     isDead = false;
-    posX = 0;
-    posY = 400;
+    posX = projectMain.cameraOffsetX + 50 - width/2;
+    posY = 40 + projectMain.cameraOffsetY - height/2;
     
     velocityX = 0;
     velocityY = 0;

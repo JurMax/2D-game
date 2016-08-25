@@ -12,6 +12,9 @@ namespace r {
     
     bool loadingSuccesful = true;
     
+    SDL_Window *gWindow;
+    SDL_Renderer *gRenderer;
+    
     TTF_Font *ttf_sans;
     SDL_Texture *circle;
     SDL_Texture *tblank;
@@ -19,6 +22,8 @@ namespace r {
     GLuint texture_Blank = -1;
     GLuint texture_Circle = -1;
     GLuint texture_Debug = -1;
+    GLuint texture_Font = -1;
+    GLuint texture_Noise = -1;
 
 
     bool loadResources() {
@@ -30,9 +35,15 @@ namespace r {
         //circle = loadTexture("circle.png");
         //tblank = loadTexture("blank.png");
         
+        gWindow = NULL;
+        gRenderer = SDL_CreateRenderer(gWindow, -1, SDL_RENDERER_ACCELERATED);
+        
         texture_Blank = loadGLTexture("blank.png");
         texture_Circle = loadGLTexture("circle.png");
         texture_Debug = loadGLTexture("debug.png");
+        texture_Font = loadGLTexture("pixelfont.png");
+        texture_Noise = loadGLTexture("noise.png");
+
         
         return loadingSuccesful;
     }
@@ -66,8 +77,8 @@ namespace r {
         glGenTextures(1, &texture);
         glBindTexture(GL_TEXTURE_2D, texture);
         
-        glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_LINEAR);
-        glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_LINEAR);
+        glTexParameterf(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_NEAREST);
+        glTexParameterf(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_NEAREST);
         glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_S, GL_REPEAT);
         glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_T, GL_REPEAT);
         
@@ -92,9 +103,6 @@ namespace r {
             return NULL;
         }
         else {
-            //Create texture from surface pixels
-            SDL_Window* gWindow = NULL;
-            SDL_Renderer *gRenderer = SDL_CreateRenderer( gWindow, -1, SDL_RENDERER_ACCELERATED );
 
             texture = SDL_CreateTextureFromSurface(gRenderer, loadingSurface);
             if (texture == NULL) {

@@ -16,12 +16,11 @@
 
 class BaseObject {
 public:
-    float posX = 0;
-    float posY = 0;
-    float velocityX = 0;
-    float velocityY = 0;
-    float width = 0;
-    float height = 0;
+    float posX = 0, posY = 0;
+    float velocityX = 0, velocityY = 0;
+    float width = 0, height = 0;
+    
+    float rotation = 0.0;
     
     int chunkID;
     
@@ -35,7 +34,8 @@ public:
 
     bool updateGLBuffers = true;
     
-
+    void onActivated();
+    
     void update();
     void render();
     int collidesWith(BaseObject obj, float timePassed);

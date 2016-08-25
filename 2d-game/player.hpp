@@ -25,9 +25,8 @@ public:
     float rightEarRotation = 45;
     float leftEarRotation = 45;
     
-    double volume;
+    float volume;
     bool isPlayer2;
-    float speed = 1000;
     SDL_Scancode left, right, jump, heightup, heightdown, shrink, grow;
     
     void setPlayer2();

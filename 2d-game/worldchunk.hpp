@@ -39,7 +39,9 @@ void addNewChunk();
 WorldChunk randomChunk();
 
 namespace c {
-    WorldChunk chunkOne();
+    WorldChunk chunkEmpty();
+    WorldChunk chunkTunnel();
+    WorldChunk chunkObstacel();
 }
 
 #endif /* worldchunk_hpp */

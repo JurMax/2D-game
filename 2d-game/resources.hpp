@@ -24,7 +24,9 @@ namespace r {
     extern GLuint texture_Blank;
     extern GLuint texture_Circle;
     extern GLuint texture_Debug;
-    
+    extern GLuint texture_Font;
+    extern GLuint texture_Noise;
+
     
     bool loadResources();
     void destroyResources();

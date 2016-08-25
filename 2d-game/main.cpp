@@ -7,12 +7,15 @@
 //
 
 #include <iostream>
+
+#define SDL_DIR <SDL2/SDL.h>
 #include <SDL2/SDL.h>
 #include "projectmain.hpp"
 
 using namespace std;
 
 int main(int argc, const char * argv[]) {
+    
     start();
     return 0;
 }

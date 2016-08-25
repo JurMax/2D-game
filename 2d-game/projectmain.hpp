@@ -32,6 +32,9 @@
 #include "baseobjects.hpp"
 #include "resources.hpp"
 
+#include "jtypes.hpp"
+#include "debughandler.hpp"
+
 
 class ProjectMain {
 public:
@@ -43,16 +46,16 @@ public:
     GLuint glProgram;
     GLuint vertexShader, fragmentShader;
     
-    double secondsPassed;
     int currentFPS = 0;
+    float framerateModifier = 1;
     int glTriangleCount = 0;
     
-    float screenOffsetX = 0;
-    float screenOffsetY = 0;
+    float cameraOffsetX = 0;
+    float cameraOffsetY = 0;
+    float debugCameraOffsetX = 0;
+    float debugCameraOffsetY = 0;
     
 private:
-    int previousTicks = 0;
-    time_t timeRunning;  /* for fps calculation */
     int prefTime = 0;
     int framesCounter = 0;
 
@@ -78,7 +81,7 @@ private:
 extern ProjectMain projectMain;
 void start();
 
-const int SCREEN_WIDTH = 1000;
+const int SCREEN_WIDTH = 400;
 const int SCREEN_HEIGHT = 700;
 const char WINDOW_NAME[] = "Ye'r Stinky";
 

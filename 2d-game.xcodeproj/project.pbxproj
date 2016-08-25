@@ -14,6 +14,7 @@
 		E403517F1CBA654A006945E1 /* functions.cpp in Sources */ = {isa = PBXBuildFile; fileRef = E403517D1CBA654A006945E1 /* functions.cpp */; };
 		E40351851CBA65F6006945E1 /* inputhandler.cpp in Sources */ = {isa = PBXBuildFile; fileRef = E40351831CBA65F6006945E1 /* inputhandler.cpp */; };
 		E403518B1CBA79C5006945E1 /* baseobjects.cpp in Sources */ = {isa = PBXBuildFile; fileRef = E40351891CBA79C5006945E1 /* baseobjects.cpp */; };
+		E41767EE1D4A389700244F71 /* baseswitch.cpp in Sources */ = {isa = PBXBuildFile; fileRef = E41767EC1D4A389700244F71 /* baseswitch.cpp */; };
 		E44EC5301CCEAD3200B99AD4 /* renderer.cpp in Sources */ = {isa = PBXBuildFile; fileRef = E44EC52E1CCEAD3200B99AD4 /* renderer.cpp */; };
 		E45131401CF09C1500BD7ACF /* libGLEW.1.13.0.dylib in Frameworks */ = {isa = PBXBuildFile; fileRef = E451313F1CF09C1500BD7ACF /* libGLEW.1.13.0.dylib */; };
 		E45131421CF09D3900BD7ACF /* OpenGL.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = E45131411CF09D3900BD7ACF /* OpenGL.framework */; };
@@ -23,8 +24,11 @@
 		E45506871CD216A600D44350 /* resources.cpp in Sources */ = {isa = PBXBuildFile; fileRef = E45506851CD216A600D44350 /* resources.cpp */; };
 		E455068A1CD21E8000D44350 /* resources in CopyFiles */ = {isa = PBXBuildFile; fileRef = E40351791CBA53FF006945E1 /* resources */; };
 		E4B4C6021CB853F1008586F0 /* main.cpp in Sources */ = {isa = PBXBuildFile; fileRef = E4B4C6011CB853F1008586F0 /* main.cpp */; };
+		E4C8B56C1D5B776D00905DC6 /* jtypes.cpp in Sources */ = {isa = PBXBuildFile; fileRef = E4C8B56A1D5B776D00905DC6 /* jtypes.cpp */; };
+		E4C8B56F1D5B952C00905DC6 /* debughandler.cpp in Sources */ = {isa = PBXBuildFile; fileRef = E4C8B56D1D5B952C00905DC6 /* debughandler.cpp */; };
 		E4E229441CC24DBC00D317E6 /* player.cpp in Sources */ = {isa = PBXBuildFile; fileRef = E4E229421CC24DBC00D317E6 /* player.cpp */; };
 		E4E229471CC2522F00D317E6 /* world.cpp in Sources */ = {isa = PBXBuildFile; fileRef = E4E229451CC2522F00D317E6 /* world.cpp */; };
+		E4E63E3D1D69E57200BE86F0 /* desk.cpp in Sources */ = {isa = PBXBuildFile; fileRef = E4E63E3B1D69E57200BE86F0 /* desk.cpp */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXCopyFilesBuildPhase section */
@@ -56,6 +60,8 @@
 		E40351841CBA65F6006945E1 /* inputhandler.hpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.h; path = inputhandler.hpp; sourceTree = "<group>"; };
 		E40351891CBA79C5006945E1 /* baseobjects.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = baseobjects.cpp; sourceTree = "<group>"; };
 		E403518A1CBA79C5006945E1 /* baseobjects.hpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.h; path = baseobjects.hpp; sourceTree = "<group>"; };
+		E41767EC1D4A389700244F71 /* baseswitch.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = baseswitch.cpp; sourceTree = "<group>"; };
+		E41767ED1D4A389700244F71 /* baseswitch.hpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.h; path = baseswitch.hpp; sourceTree = "<group>"; };
 		E44EC52E1CCEAD3200B99AD4 /* renderer.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = renderer.cpp; sourceTree = "<group>"; };
 		E44EC52F1CCEAD3200B99AD4 /* renderer.hpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.h; path = renderer.hpp; sourceTree = "<group>"; };
 		E451313F1CF09C1500BD7ACF /* libGLEW.1.13.0.dylib */ = {isa = PBXFileReference; lastKnownFileType = "compiled.mach-o.dylib"; name = libGLEW.1.13.0.dylib; path = lib/libGLEW.1.13.0.dylib; sourceTree = "<group>"; };
@@ -68,10 +74,16 @@
 		E45506861CD216A600D44350 /* resources.hpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.h; path = resources.hpp; sourceTree = "<group>"; };
 		E4B4C5FE1CB853F1008586F0 /* 2d-game */ = {isa = PBXFileReference; explicitFileType = "compiled.mach-o.executable"; includeInIndex = 0; path = "2d-game"; sourceTree = BUILT_PRODUCTS_DIR; };
 		E4B4C6011CB853F1008586F0 /* main.cpp */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.cpp.cpp; path = main.cpp; sourceTree = "<group>"; };
+		E4C8B56A1D5B776D00905DC6 /* jtypes.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = jtypes.cpp; sourceTree = "<group>"; };
+		E4C8B56B1D5B776D00905DC6 /* jtypes.hpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.h; path = jtypes.hpp; sourceTree = "<group>"; };
+		E4C8B56D1D5B952C00905DC6 /* debughandler.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = debughandler.cpp; sourceTree = "<group>"; };
+		E4C8B56E1D5B952C00905DC6 /* debughandler.hpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.h; path = debughandler.hpp; sourceTree = "<group>"; };
 		E4E229421CC24DBC00D317E6 /* player.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = player.cpp; sourceTree = "<group>"; };
 		E4E229431CC24DBC00D317E6 /* player.hpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.h; path = player.hpp; sourceTree = "<group>"; };
 		E4E229451CC2522F00D317E6 /* world.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = world.cpp; sourceTree = "<group>"; };
 		E4E229461CC2522F00D317E6 /* world.hpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.h; path = world.hpp; sourceTree = "<group>"; };
+		E4E63E3B1D69E57200BE86F0 /* desk.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = desk.cpp; sourceTree = "<group>"; };
+		E4E63E3C1D69E57200BE86F0 /* desk.hpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.h; path = desk.hpp; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -94,6 +106,7 @@
 			isa = PBXGroup;
 			children = (
 				E40351891CBA79C5006945E1 /* baseobjects.cpp */,
+				E41767EC1D4A389700244F71 /* baseswitch.cpp */,
 			);
 			name = objects;
 			sourceTree = "<group>";
@@ -115,6 +128,7 @@
 			children = (
 				E4E229421CC24DBC00D317E6 /* player.cpp */,
 				E4E229451CC2522F00D317E6 /* world.cpp */,
+				E4E63E3B1D69E57200BE86F0 /* desk.cpp */,
 				E45506811CD12F6800D44350 /* worldchunk.cpp */,
 				E40351881CBA79A2006945E1 /* objects */,
 			);
@@ -157,15 +171,28 @@
 			isa = PBXGroup;
 			children = (
 				E4B4C6011CB853F1008586F0 /* main.cpp */,
-				E4E229401CC22C5200D317E6 /* headers */,
 				E4E229481CC2525200D317E6 /* files */,
+				E4E229401CC22C5200D317E6 /* headers */,
 			);
 			path = "2d-game";
+			sourceTree = "<group>";
+		};
+		E4C8B5691D5B774D00905DC6 /* jurmax */ = {
+			isa = PBXGroup;
+			children = (
+				E4C8B56A1D5B776D00905DC6 /* jtypes.cpp */,
+				E4C8B56D1D5B952C00905DC6 /* debughandler.cpp */,
+			);
+			name = jurmax;
 			sourceTree = "<group>";
 		};
 		E4E229401CC22C5200D317E6 /* headers */ = {
 			isa = PBXGroup;
 			children = (
+				E4E63E3C1D69E57200BE86F0 /* desk.hpp */,
+				E4C8B56E1D5B952C00905DC6 /* debughandler.hpp */,
+				E4C8B56B1D5B776D00905DC6 /* jtypes.hpp */,
+				E41767ED1D4A389700244F71 /* baseswitch.hpp */,
 				E45506861CD216A600D44350 /* resources.hpp */,
 				E45506821CD12F6800D44350 /* worldchunk.hpp */,
 				E403518A1CBA79C5006945E1 /* baseobjects.hpp */,
@@ -184,6 +211,7 @@
 			children = (
 				E403516D1CB8FF1B006945E1 /* projectmain.cpp */,
 				E44EC5321CCEB01C00B99AD4 /* game */,
+				E4C8B5691D5B774D00905DC6 /* jurmax */,
 				E44EC5311CCEAFC500B99AD4 /* support */,
 			);
 			name = files;
@@ -262,9 +290,13 @@
 				E4E229441CC24DBC00D317E6 /* player.cpp in Sources */,
 				E403517F1CBA654A006945E1 /* functions.cpp in Sources */,
 				E44EC5301CCEAD3200B99AD4 /* renderer.cpp in Sources */,
+				E4C8B56C1D5B776D00905DC6 /* jtypes.cpp in Sources */,
+				E4C8B56F1D5B952C00905DC6 /* debughandler.cpp in Sources */,
+				E41767EE1D4A389700244F71 /* baseswitch.cpp in Sources */,
 				E40351851CBA65F6006945E1 /* inputhandler.cpp in Sources */,
 				E4E229471CC2522F00D317E6 /* world.cpp in Sources */,
 				E403518B1CBA79C5006945E1 /* baseobjects.cpp in Sources */,
+				E4E63E3D1D69E57200BE86F0 /* desk.cpp in Sources */,
 				E45506871CD216A600D44350 /* resources.cpp in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;

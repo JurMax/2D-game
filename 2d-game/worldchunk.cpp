@@ -25,7 +25,7 @@ void WorldChunk::removeObjectFromList() {
 
 void WorldChunk::placeObjectInList() {
     for (unsigned i = 0; i < chunkobjects.size(); i++) {
-        objects.push_back(chunkobjects.at(i));
+        world::objects.push_back(chunkobjects.at(i));
     }
 }
 
@@ -49,6 +49,7 @@ int WorldChunk::calculateSize() {
             }
         }
     }
+    
     width = largestX - smallestX;
     return width;
 }
@@ -57,45 +58,86 @@ int WorldChunk::calculateSize() {
 
 void addNewChunk() {
     WorldChunk c = randomChunk();
-    c.id = (int) chunks.size();
-    
-    SDL_Color debugColor = { static_cast<Uint8>(rand() * 255), static_cast<Uint8>(rand() * 255), static_cast<Uint8>(rand() * 255), 255 };
+    c.posX = collectiveChunkSize;
+    collectiveChunkSize += c.calculateSize();
+
+    c.id = (int) world::chunks.size();
     
     for (unsigned i = 0; i < c.chunkobjects.size(); i++) {
         BaseObject obj = c.chunkobjects.at(i);
         obj.chunkID = c.id;
         obj.posX += c.posX;
-        obj.debugColor = debugColor;
         
-        objects.push_back(obj);
+        world::objects.push_back(obj);
     }
     
-    chunks.push_back(c);
+    world::chunks.push_back(c);
 }
-
 
 
 WorldChunk randomChunk() {
-    WorldChunk chunk = c::chunkOne();
-    //TODO: generate random chunk
+    int chunkAmount = 3;
+    int r = rand() / (float) RAND_MAX * chunkAmount;
     
-    chunk.posX = collectiveChunkSize;
-    collectiveChunkSize += chunk.calculateSize();
+    if (r == 0) return c::chunkEmpty();
+    if (r == 1) return c::chunkTunnel();
+    if (r == 2) return c::chunkObstacel();
     
-    return chunk;
+    else {
+        printError("no chunk generated!");
+        return c::chunkEmpty();
+    }
 }
 
 
 
-
-WorldChunk c::chunkOne() {
+WorldChunk c::chunkEmpty() {
     WorldChunk c;
+    SDL_Color randomColor = { (Uint8) (rand() * 255), (Uint8) (rand() * 255), (Uint8) (rand() * 255), 255 };
     for (int i = 0; i < 5; i++) {
-        BaseObject obj = createBaseObject((float) 100 * i, 0, 100, 100);
-        c.chunkobjects.push_back(obj);
+        if (i != 2 && i != 3) {
+            BaseObject obj = createBaseObject((float) 20 * i, 0, 20, 20);
+            obj.debugColor = randomColor;
+            c.chunkobjects.push_back(obj);
+        }
     }
     return c;
 }
 
+WorldChunk c::chunkTunnel() {
+    WorldChunk c;
+    SDL_Color randomColor = { (Uint8) (rand() * 255), (Uint8) (rand() * 255), (Uint8) (rand() * 255), 255 };
+    SDL_Color randomColor2 = { (Uint8) (rand() * 255), (Uint8) (rand() * 255), (Uint8) (rand() * 255), 255 };
+    for (int i = 0; i < 5; i++) {
+        BaseObject obj = createBaseObject((float) 20 * i, 0, 20, 20);
+        obj.debugColor = randomColor;
+        c.chunkobjects.push_back(obj);
+        
+        
+        BaseObject obj2 = createBaseObject((float) 20 * i, 60, 20, 20);
+        obj2.debugColor = randomColor2;
+        c.chunkobjects.push_back(obj2);
+    }
+    BaseObject obj = createBaseObject((float) 20 * 2, 40, 20, 20);
+    obj.debugColor = randomColor2;
+    c.chunkobjects.push_back(obj);
+    
+    return c;
+}
+
+WorldChunk c::chunkObstacel() {
+    WorldChunk c;
+    SDL_Color randomColor = { (Uint8) (rand() * 255), (Uint8) (rand() * 255), (Uint8) (rand() * 255), 255 };
+    for (int i = 0; i < 4; i++) {
+        BaseObject obj = createBaseObject((float) 20 * i, 0, 20, 20);
+        obj.debugColor = randomColor;
+        c.chunkobjects.push_back(obj);
+    }
+    BaseObject obj = createBaseObject((float) 50, 20, 20, 20);
+    obj.debugColor = { 255, 0, 0, 255 };
+    c.chunkobjects.push_back(obj);
+    
+    return c;
+}
 
 

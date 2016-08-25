@@ -30,8 +30,8 @@ extern const bool IS_DEBUG;
 //extern const uint32_t FLOATS_PER_COLOR = 4;
 
 
-int getMouseX();
-int getMouseY();
+float getMouseX();
+float getMouseY();
 void printError(std::string str);
 
 void loadShader(int shaderType);

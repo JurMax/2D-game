@@ -14,11 +14,10 @@ void BaseObject::update() {
         velocityX = 200;
     }
     
-    posX += velocityX * projectMain.secondsPassed;
-    posY += velocityY * projectMain.secondsPassed;
+    posX += velocityX * projectMain.framerateModifier;
+    posY += velocityY * projectMain.framerateModifier;
     velocityX *= 0.8;
     velocityY *= 0.8;
-    
     
     
     if (SCREEN_REPEAT && STATIC_SCREEN) {
@@ -31,6 +30,12 @@ void BaseObject::update() {
             posX = w;
         }
     }
+    
+}
+
+
+void BaseObject::onActivated() {
+    
 }
 
 
@@ -43,7 +48,12 @@ void BaseObject::render() {
     glBindVertexArray(vao[0]);
     glDrawArrays(GL_TRIANGLE_FAN, 0, 4);*/
     
-    renderer::glRenderRect(debugColor, posX, posY, width, height);
+    if (isKeyDown(SDL_SCANCODE_H)) rotation += 0.01;
+    if (isKeyDown(SDL_SCANCODE_J)) rotation -= 0.01;
+
+    float point = 0.0;
+    renderer::glRenderRect(r::texture_Blank, debugColor, posX, posY, width, height, rotation, &point, &point);
+    
 }
 
 
@@ -101,8 +111,8 @@ void BaseObject::destroy() {
  * 1: collides left  2: collides right  3: collides bottom  4: collides top */
 int BaseObject::collidesWith(BaseObject obj, float timePassed) {
     
-    double posx = posX - velocityX * projectMain.secondsPassed + velocityX * timePassed;
-    double posy = posY - velocityY * projectMain.secondsPassed + velocityY * timePassed;
+    double posx = posX - velocityX * projectMain.framerateModifier + velocityX * timePassed;
+    double posy = posY - velocityY * projectMain.framerateModifier + velocityY * timePassed;
     
     bool sameX = posx + width > obj.posX && posx < obj.posX + obj.width;
     bool sameY = posy + height > obj.posY && posy < obj.posY + obj.height;
@@ -155,6 +165,7 @@ BaseObject createBaseObject(float posx, float posy, float width, float height) {
     
     glGenBuffers(ATTRIB_COUNT, object.vbo);
     glGenVertexArrays(1, object.vao);
+
     
     return object;
 }
